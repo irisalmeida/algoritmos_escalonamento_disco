@@ -27,11 +27,10 @@ source .venv/bin/activate
 
 ### Escolha uma das Opções
 
-```python
-Gerar sequência aleatória
-Escolher sequência
-Informar sequência 
-Cancelar
-```
+    -Gerar sequência aleatória
+    -Escolher sequência
+    -Informar sequência 
+    -Cancelar
+
 
 
