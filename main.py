@@ -64,13 +64,14 @@ def main():
 
         # Use lista_numeros_aleatorios.txt
         sequence, total_seeks, total_latency = cscan.cscan_with_latency(cscan.requests_aleatorio, 6)
-        print("Tempo total de latência (aleatório):", total_latency, "ms")
+        print("Tempo total de latência  (aleatório):", total_latency, "ms")
 
         # Use lista_numeros_sequenciais.txt
         sequence, total_seeks, total_latency = cscan.cscan_with_latency(cscan.requests_sequenciais, 6)
         print("Tempo total de latência (sequencial):", total_latency, "ms")
 
-        """print("Caminho para solicitações sequenciais:", path_sequenciais)
+        """
+        #print("Caminho para solicitações sequenciais:", path_sequenciais)
         print("-------------------------")
         print("Caminho para solicitações aleatórias:", path_aleatorio)
         """

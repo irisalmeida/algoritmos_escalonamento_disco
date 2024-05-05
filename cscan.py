@@ -35,17 +35,16 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
 
 
 def calculate_latency_cscan(current_block, target_block, was_seek=False):
-    rotational_latency = 4  
-    transfer_time = 4 / 400  
+    rotational_latency = 2  
+    transfer_time = 4 / 125  
     
-    if was_seek or current_block // 4 != target_block // 4:
+    if was_seek or current_block // 8 != target_block // 8:
         seek_time = 4  
     else:
         seek_time = 0  
     
     total_latency = seek_time + rotational_latency + transfer_time
     return total_latency
-
 
 
 def cscan_with_latency(requests, start_block):
@@ -69,7 +68,7 @@ def cscan_with_latency(requests, start_block):
         if next_block is None:
             next_block = requests[0]
 
-        was_seek = current_block // 4 != next_block // 4  
+        was_seek = current_block // 8 != next_block // 8 
         total_seeks += 1 if was_seek else 0
         # Aqui, em vez de calcular o caminho novamente, usamos o caminho gerado anteriormente
         total_latency += calculate_latency_cscan(current_block, next_block, was_seek) #passa o  cscan_path??
@@ -80,10 +79,4 @@ def cscan_with_latency(requests, start_block):
 
     return sequence, total_seeks, total_latency
 
-"""
-
-Correção futura:
--chamada para CSCAN e a atribuição do caminho resultante, mas não a está usando para nada
--dois tipos diferentes de solicitações (requests) não são passadas como argumento para a função CSCAN(corrigir em todo código)
-"""
 
