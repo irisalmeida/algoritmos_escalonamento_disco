@@ -45,11 +45,9 @@ def main():
         )
     
     answer = inquirer.prompt([input_option_question])
-
     if answer.get("input_option") == choices[1]:  # Cancelar
         print("Operação cancelada pelo usuário.")
         exit()
-
     seqs = get_seq_files()
     if not seqs:
         print("Erro ao ler sequências: diretório de dados não existe.")
@@ -58,23 +56,9 @@ def main():
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
         # Use lista_numeros_aleatorios.txt
-        path_sequenciais, path_aleatorio = cscan.CSCAN(cscan.requests_sequenciais, cscan.requests_aleatorio, 6)
 
-
-
-        # Use lista_numeros_aleatorios.txt
-        sequence, total_seeks, total_latency = cscan.cscan_with_latency(cscan.requests_aleatorio, 6)
-        print("Tempo total de latência  (aleatório):", total_latency, "ms")
-
-        # Use lista_numeros_sequenciais.txt
-        sequence, total_seeks, total_latency = cscan.cscan_with_latency(cscan.requests_sequenciais, 6)
-        print("Tempo total de latência (sequencial):", total_latency, "ms")
-
-        """
-        #print("Caminho para solicitações sequenciais:", path_sequenciais)
-        print("-------------------------")
-        print("Caminho para solicitações aleatórias:", path_aleatorio)
-        """
+        x,y, z, w = cscan.CSCAN(cscan.requests_sequenciais, cscan.requests_aleatorio, 12)
+        print("ESSE:", x,y,z, w )
 
 
 if __name__ == "__main__":
