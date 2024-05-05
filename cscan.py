@@ -12,16 +12,26 @@ with open("./data/lista_numeros_sequenciais.txt", "r") as f:
     requests_sequenciais = [int(num_str) for num_str in numbers_str]
 
 
-def CSCAN(requests, start_position):
+def generate_path(requests, start_position):
+    path = []
 
-        path = ''
-        for i in range(start_position, len(requests)):
-            path += str(requests[i]) + '->'
+    # Percorre os blocos a partir da posição inicial até o final da lista de solicitações
+    for i in range(start_position, len(requests)):
+        path.append(requests[i])
 
-        for i in range(0, start_position):
-            path += str(requests[i]) + '->'
+    # Percorre os blocos do início até a posição inicial
+    for i in range(0, start_position):
+        path.append(requests[i])
 
-        return path
+    return path
+
+
+def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
+    path_sequenciais = generate_path(requests_sequenciais, start_position)
+    path_aleatorio = generate_path(requests_aleatorio, start_position)
+
+    return path_sequenciais, path_aleatorio
+
 
 
 def calculate_latency_cscan(current_block, target_block, was_seek=False):
@@ -37,9 +47,9 @@ def calculate_latency_cscan(current_block, target_block, was_seek=False):
     return total_latency
 
 
-def cscan_with_latency(requests, start_block):
 
-    cscan_path = CSCAN(requests, start_block)
+def cscan_with_latency(requests, start_block):
+    cscan_path = generate_path(requests, start_block)
 
     current_block = start_block
     total_seeks = 0
@@ -61,15 +71,14 @@ def cscan_with_latency(requests, start_block):
 
         was_seek = current_block // 4 != next_block // 4  
         total_seeks += 1 if was_seek else 0
-        total_latency += calculate_latency_cscan(current_block, next_block, was_seek)
+        # Aqui, em vez de calcular o caminho novamente, usamos o caminho gerado anteriormente
+        total_latency += calculate_latency_cscan(current_block, next_block, was_seek) #passa o  cscan_path??
         sequence.append(next_block)
         current_block = next_block
 
         requests.remove(next_block)  
 
     return sequence, total_seeks, total_latency
-
-
 
 """
 
