@@ -55,7 +55,6 @@ def main():
 
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
-        # Use lista_numeros_aleatorios.txt
 
         x,y, z, w = cscan.CSCAN(cscan.requests_sequenciais, cscan.requests_aleatorio, 12)
         print("ESSE:", x,y,z, w )
