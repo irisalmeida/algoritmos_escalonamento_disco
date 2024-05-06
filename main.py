@@ -8,6 +8,7 @@ import inquirer
 
 DATA_DIR = "data"
 
+
 def save_to_file(seq: List[int]) -> str:
     try:
         os.makedirs(DATA_DIR)
@@ -36,27 +37,39 @@ def get_seq_files() -> List[str]:
             seqs.append(f"{seq_file}: {seq}")
     return seqs
 
+
+
 def main():
     choices = ["Usar sequências pré-selecionadas", "Cancelar"]
-    input_option_question = inquirer.List(  
-            "input_option",
-            message="Como deseja usar os dados?",
-            choices=choices,
-        )
-    
+    input_option_question = inquirer.List(
+        "input_option",
+        message="Como deseja usar os dados?",
+        choices=choices,
+    )
+
     answer = inquirer.prompt([input_option_question])
-    if answer.get("input_option") == choices[1]:  
+    if answer.get("input_option") == choices[1]:
         print("Operação cancelada pelo usuário.")
         exit()
-    seqs = get_seq_files()
-    if not seqs:
-        print("Erro ao ler sequências: diretório de dados não existe.")
-        exit()
+    
+    # Ler os arquivos de sequência aqui
+    with open("./data/lista_numeros_aleatorios.txt", "r") as f:
+        lines = f.readlines()
+        numbers_str = lines[0].strip()[1:-1].split(', ')
+        requests_aleatorio = [int(num_str) for num_str in numbers_str]
 
+    with open("./data/lista_numeros_sequenciais.txt", "r") as f:
+        lines = f.readlines()
+        numbers_str = lines[0].strip()[1:-1].split(', ')
+        requests_sequenciais = [int(num_str) for num_str in numbers_str]
+
+    # Chamada para a função CSCAN
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
-        x,y, z, w = cscan.CSCAN(cscan.requests_sequenciais, cscan.requests_aleatorio, 12)
-        print("ESSE:", x,y,z, w )
+        x, y, z, w = cscan.CSCAN(
+            requests_sequenciais, requests_aleatorio, 12)
+        print("ESSE:", x, y, z, w)
+
 
 
 if __name__ == "__main__":

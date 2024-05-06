@@ -1,16 +1,6 @@
 
 from datetime import datetime
 
-with open("./data/lista_numeros_aleatorios.txt", "r") as f:
-    lines = f.readlines()
-    numbers_str = lines[0].strip()[1:-1].split(', ')
-    requests_aleatorio = [int(num_str) for num_str in numbers_str]
-
-with open("./data/lista_numeros_sequenciais.txt", "r") as f:
-    lines = f.readlines()
-    numbers_str = lines[0].strip()[1:-1].split(', ')
-    requests_sequenciais = [int(num_str) for num_str in numbers_str]
-
 
 def calculate_latency_cscan(seek_time):
     rotational_latency = 4 
@@ -75,6 +65,5 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
     seek_sequence_aleatorio, total_seeks_aleatorio, total_latency_aleatorio = cscan_internal(requests_aleatorio, start_position)
 
     return seek_sequence_sequenciais , seek_sequence_aleatorio, total_latency_sequenciais, total_latency_aleatorio
-
 
 
