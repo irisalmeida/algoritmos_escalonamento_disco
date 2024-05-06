@@ -1,5 +1,6 @@
 import os
 from os.path import isfile, join
+import random
 from typing import List
 
 
@@ -63,12 +64,41 @@ def main():
         numbers_str = lines[0].strip()[1:-1].split(', ')
         requests_sequenciais = [int(num_str) for num_str in numbers_str]
 
-    # Chamada para a função CSCAN
+        # Chamada para a função CSCAN
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
         x, y, z, w = cscan.CSCAN(
-            requests_sequenciais, requests_aleatorio, 50)
-        print("ESSE:", x, y, z, w)
+            requests_sequenciais, requests_aleatorio, 500)
+
+        print(f"\n\
+            seek_sequence_sequenciais: {x}\n\
+            seek_sequence_aleatorio: {y}\n\
+            total_latency_sequenciais: {z}\n\
+            total_latency_aleatorio: {w}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
