@@ -5,7 +5,6 @@ from datetime import datetime
 def calculate_latency_cscan(seek_time):
     rotational_latency = 4 
     transfer_time = 4 / 400
-    
     total_latency = seek_time + rotational_latency + transfer_time
     return total_latency
 
@@ -23,6 +22,9 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
         seek_sequence = []
         total_latency = 0
 
+        left.append(0)
+        right.append(disk_size-1)
+
  
         for request in requests:
             if request < head:
@@ -35,9 +37,8 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
         right.sort()
 
         
-        while right:
-            
-            next_block = right.pop(0)
+        for i in range(len(right)):
+            next_block = right[i]
             seek_sequence.append(next_block)
             seek_time= 4 if cur_track // 4 != next_block // 4 else 0
             total_latency += calculate_latency_cscan(seek_time)
@@ -49,8 +50,8 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
         seek_count += (disk_size - 1)
 
         
-        while left:
-            next_block = left.pop(0)
+        for i in range(len(left)):
+            next_block = left[i]
             seek_sequence.append(next_block)
             seek_time= 4 if cur_track // 4 != next_block // 4 else 0
             total_latency += calculate_latency_cscan(seek_time)

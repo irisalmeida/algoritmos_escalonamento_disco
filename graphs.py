@@ -6,7 +6,7 @@ from FScan import FScan
 
 from cscan import CSCAN
 
-
+#[13, 11, 17, 10, 11, 7]
 def gerar_graficos(algoritmo1, algoritmo2):
     # Plotar gráficos de progressão de latência e seeks
     plt.figure(figsize=(18, 6))

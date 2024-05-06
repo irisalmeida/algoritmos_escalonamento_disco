@@ -67,7 +67,7 @@ def main():
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
         x, y, z, w = cscan.CSCAN(
-            requests_sequenciais, requests_aleatorio, 12)
+            requests_sequenciais, requests_aleatorio, 50)
         print("ESSE:", x, y, z, w)
 
 
