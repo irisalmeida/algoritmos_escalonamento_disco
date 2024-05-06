@@ -38,14 +38,14 @@ def get_seq_files() -> List[str]:
 
 def main():
     choices = ["Usar sequências pré-selecionadas", "Cancelar"]
-    input_option_question = inquirer.List(  # Question for user input
+    input_option_question = inquirer.List(  
             "input_option",
             message="Como deseja usar os dados?",
             choices=choices,
         )
     
     answer = inquirer.prompt([input_option_question])
-    if answer.get("input_option") == choices[1]:  # Cancelar
+    if answer.get("input_option") == choices[1]:  
         print("Operação cancelada pelo usuário.")
         exit()
     seqs = get_seq_files()
@@ -55,7 +55,6 @@ def main():
 
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
-
         x,y, z, w = cscan.CSCAN(cscan.requests_sequenciais, cscan.requests_aleatorio, 12)
         print("ESSE:", x,y,z, w )
 

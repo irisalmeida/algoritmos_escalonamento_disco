@@ -12,17 +12,15 @@ with open("./data/lista_numeros_sequenciais.txt", "r") as f:
     requests_sequenciais = [int(num_str) for num_str in numbers_str]
 
 
+def calculate_latency_cscan(seek_time):
+    rotational_latency = 4 
+    transfer_time = 4 / 400
+    
+    total_latency = seek_time + rotational_latency + transfer_time
+    return total_latency
+
 
 def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
-
-    def calculate_latency_cscan(seek_time):
-        rotational_latency = 4 
-        transfer_time = 4 / 400
-    
-        total_latency = seek_time + rotational_latency + transfer_time
-        return total_latency
-
-
     size = max(requests_sequenciais + requests_aleatorio) + 1  
     disk_size = 200
 
@@ -35,8 +33,7 @@ def CSCAN(requests_sequenciais, requests_aleatorio, start_position):
         seek_sequence = []
         total_latency = 0
 
-
-        
+ 
         for request in requests:
             if request < head:
                 left.append(request)
