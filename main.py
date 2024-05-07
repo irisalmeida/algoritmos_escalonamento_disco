@@ -1,10 +1,8 @@
 import os
 from os.path import isfile, join
-import random
 from typing import List
 
-
-import cscan
+import CScan
 import inquirer
 
 DATA_DIR = "data"
@@ -18,7 +16,7 @@ def save_to_file(seq: List[int]) -> str:
 
     data_dir_content = os.listdir(DATA_DIR)
     data_files = [f for f in data_dir_content if isfile(join(DATA_DIR, f))]
-    new_file_name = f"seq_{len(data_files)+1}.txt"
+    new_file_name = f"seq_{len(data_files) + 1}.txt"
     with open(join(DATA_DIR, new_file_name), "w") as f:
         for num in seq:
             f.write(str(num))
@@ -39,7 +37,6 @@ def get_seq_files() -> List[str]:
     return seqs
 
 
-
 def main():
     choices = ["Usar sequências pré-selecionadas", "Cancelar"]
     input_option_question = inquirer.List(
@@ -52,7 +49,7 @@ def main():
     if answer.get("input_option") == choices[1]:
         print("Operação cancelada pelo usuário.")
         exit()
-    
+
     # Ler os arquivos de sequência aqui
     with open("./data/lista_numeros_aleatorios.txt", "r") as f:
         lines = f.readlines()
@@ -67,7 +64,7 @@ def main():
         # Chamada para a função CSCAN
     if answer.get("input_option") == choices[0]:
         print("C-SCAN:")
-        x, y, z, w = cscan.CSCAN(
+        x, y, z, w = CScan.CSCAN(
             requests_sequenciais, requests_aleatorio, 500)
 
         print(f"\n\
@@ -77,32 +74,5 @@ def main():
             total_latency_aleatorio: {w}")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     main()
-
-
