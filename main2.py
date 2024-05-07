@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 
 from FScan import FScan
-
+from cscan import Cscan
 
 def gerar_graficos(algoritmo1, algoritmo2):
     # Plotar gráficos de progressão de latência e seeks
@@ -52,6 +52,30 @@ def main():
     requests_bg_sh = list(range(10000))
     random.shuffle(requests_bg_sh)
 
+
+    # CScan
+    active_list_size = 5
+    fscan = Cscan(requests=requests_bg, head=50, name="Cscan para lista ordenada")
+    fscan.cscan_internal()
+
+    fscan_sh = Cscan(requests=requests_bg_sh, head=50, name="Cscan para lista aleatória")
+    fscan_sh.cscan_internal()
+    print("Ordenado")
+    #print("Tempo de execucao: ", fscan.execution_time, "ms") # adicionar nome do algoritmo aqui e embaixo
+    print(f"Total de seeks: {fscan.total_seeks}")
+    print(f"Total de latência: {fscan.total_latency} ms")
+
+    print("Aleatorio")
+    #print("Tempo de execucao: ", fscan_sh.execution_time, "ms")
+    print(f"Total de seeks: {fscan_sh.total_seeks}")
+    print(f"Total de latência: {fscan_sh.total_latency} ms")
+    gerar_graficos(fscan, fscan_sh)
+
+
+
+
+
+"""
     # FScan
     active_list_size = 5
     fscan = FScan(initial_head_position=50, total_requests=requests_bg, max_queue_size=active_list_size, name="FScan para lista ordenada")
@@ -70,6 +94,10 @@ def main():
     print(f"Total de latência: {fscan_sh.total_latency} ms")
     gerar_graficos(fscan, fscan_sh)
 
+"""
+
+
 
 if __name__ == "__main__":
     main()
+
