@@ -1,4 +1,5 @@
 from typing import Tuple, List
+import time
 
 
 class Cscan():
@@ -10,8 +11,11 @@ class Cscan():
         self.left = []
         self.right = []
         self.seek_sequence = []
+        self.execution_time = 0
+
 
     def execute(self) -> Tuple[List[int], int]:
+        before = time.time()
         self.left.append(0)
         self.right.append(self.disk_size - 1)
         for request in self.requests:
@@ -40,7 +44,10 @@ class Cscan():
             self.seek_count += delta_distance
             cur_pos = next_pos
 
-        return self.seek_sequence, self.seek_count
+        after = time.time()
+        self.execution_time = (after - before) * 1000
+
+        return self.seek_sequence, self.seek_count, self.execution_time
 
 
 class Sstf():
@@ -52,8 +59,11 @@ class Sstf():
         self.left = []
         self.right = []
         self.seek_sequence = []
+        self.execution_time = 0
+
 
     def execute(self):
+            before = time.time()
             l = len(self.requests)
             diff = [0] * l
 
@@ -80,8 +90,12 @@ class Sstf():
 
 
             seek_sequence[len(seek_sequence) - 1] = head
+            after = time.time()
+            self.execution_time = (after - before) * 1000
 
-            return seek_sequence, seek_count
+            return seek_sequence, seek_count, self.execution_time
+
+
 
     @staticmethod
     def calculateDifference(queue, head, diff):

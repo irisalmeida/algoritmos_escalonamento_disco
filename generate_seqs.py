@@ -12,9 +12,9 @@ import generate_seqs
 
 
 def generate_reqs(n):
-    return random.sample(range(0, 10000), n)
+    return random.sample(range(0, 1000), n)
 
-amount = range(5, 9005, 50)
+amount = range(5, 905, 50)
 
 for a in amount:
     reqs = generate_reqs(a)

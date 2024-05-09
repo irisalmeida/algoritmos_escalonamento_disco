@@ -46,9 +46,9 @@ def get_requests(file_path):
 
 
 def test_algorithms():
-    # requests = [278, 914, 447, 71, 161, 659, 335]
+    requests = [278, 914, 447, 71, 161, 659, 335]
     # requests = [176, 79, 34, 60, 92, 11, 41, 114]
-    requests = [16, 24, 43, 82, 140, 170, 190]
+    # requests = [16, 24, 43, 82, 140, 170, 190]
 
     cscan = Cscan(requests, 50)
     seek_sequence, seek_count = cscan.execute()
@@ -83,27 +83,100 @@ def main():
 
     seeks_cscan = []
     seeks_sstf = []
-    for _ in range(1000):
-        requests = random.sample(range(0, 1000), 5)
+    execute_time_cscan = []
+    execution_time_sstf_l = []
+    #for _ in range(1000):
+        #requests = random.sample(range(0, 1000), 5)
 
-        cscan = Cscan(requests, 500)
-        _, seek_count_cscan = cscan.execute()
-        #add_graph("C-SCAN", 50, seek_count_cscan, "blue")
-        seeks_cscan.append(seek_count_cscan)
-
-        sstf = Sstf(requests, 500)
-        _, seek_count_sstf = sstf.execute()
-        #add_graph("SSTF", 50, seek_count_sstf, "red")
-        seeks_sstf.append(seek_count_sstf)
-
-    print(f"{statistics.mean(seeks_cscan) = }")
-    print(f"{statistics.mean(seeks_sstf) = }")
+    #requests = [16, 24, 43, 82, 140, 170, 190]
+    #requests = [24, 140, 16, 190, 43, 170, 82]
+    requests = [71, 161, 278, 335, 447, 659, 914]
+    print(requests)
 
 
+    cscan = Cscan(requests, 500)
+    _, seek_count_cscan, execution_time_cscan = cscan.execute()
+    seeks_cscan.append(seek_count_cscan)
+    execute_time_cscan.append(execution_time_cscan)
+    print(f"Tempo de execução do C-SCAN: {execution_time_cscan} ms")
+    print(f"Quantidade de Seeks do C-SCAN:{seeks_cscan}")
+  
+    sstf = Sstf(requests, 500)
+    _, seek_count_sstf, execution_time_sstf = sstf.execute()
+    seeks_sstf.append(seek_count_sstf)
+    execution_time_sstf_l.append(execution_time_sstf)
+    print(f"Tempo de execução do SSTF: {execution_time_sstf} ms")
+    print(f"Quantidade de Seeks do SSTF:{seeks_sstf}")
 
 
- 
+    #print(f"{statistics.mean(seeks_cscan) = }")
+    #print(f"{statistics.mean(seeks_sstf) = }")
 
+
+"""
+#QUANTIDADE TEMPOOOOO de execução  POR ALGORITMO(FIZ MANUAL PELA FALTA DE TEMPO):
+
+    # Assume que seeks_cscan e seeks_sstf contêm o número total de seeks para cada algoritmo
+    algorithms = ['C-SCAN', 'SSTF']  # Nomes dos algoritmos
+    seek_counts = [0.022172927856445312, 0.07319450378417969]  # Total de seeks para cada algoritmo
+
+    # Cria o gráfico de barras horizontais
+    plt.figure(figsize=(10, 5))  # Ajusta o tamanho da figura para melhor visualização
+    bars = plt.barh(algorithms, seek_counts, color=['green', 'purple'])  # Barras horizontais com cores
+
+    # Adiciona os valores exatos no final de cada barra
+    for bar, value in zip(bars, seek_counts):
+        bbox = dict(boxstyle='round', facecolor='white', edgecolor='0.3')
+        plt.text(bar.get_width(), bar.get_y() + bar.get_height()/2, f'{value}', 
+                va='center', ha='right', bbox=bbox)
+
+    # Personaliza os rótulos e o título
+    plt.xlabel('Tempo de execução (ms)')
+    plt.ylabel('Algoritmo')
+    plt.title('Comparação do tempo de execução entre C-SCAN e SSTF')
+
+    # Ajusta o espaçamento e exibe o gráfico
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.2)
+    plt.tight_layout()
+    plt.show()
+
+"""
+
+
+
+
+
+
+"""
+    #QUANTIDADE DE SEEKS POR ALGORITMO(FIZ MANUAL PELA FALTA DE TEMPO):
+
+    # Assume que seeks_cscan e seeks_sstf contêm o número total de seeks para cada algoritmo
+    algorithms = ['C-SCAN', 'SSTF']  # Nomes dos algoritmos
+    seek_counts = [1945, 1272]  # Total de seeks para cada algoritmo
+
+    # Cria o gráfico de barras horizontais
+    plt.figure(figsize=(10, 5))  # Ajusta o tamanho da figura para melhor visualização
+    bars = plt.barh(algorithms, seek_counts, color=['purple', 'green'])  # Barras horizontais com cores
+
+    # Adiciona os valores exatos no final de cada barra
+    for bar, value in zip(bars, seek_counts):
+        plt.text(bar.get_width(), bar.get_y() + bar.get_height()/2, f'{value}', 
+                va='center', ha='left')
+
+    # Personaliza os rótulos e o título
+    plt.xlabel('Quantidade de Seeks')
+    plt.ylabel('Algoritmo')
+    plt.title('Comparação da Contagem de Seeks entre C-SCAN e SSTF')
+
+    # Ajusta o espaçamento e exibe o gráfico
+    plt.tight_layout()
+    plt.show()
+"""
+
+
+
+"""
+     #HISTOGRAMAAAA DE MÉDIAS 
     #teste do histograma:
     algoritmos = ['C-SCAN   ', 'SSTF       ']  # Lista de nomes dos algoritmos
     medias = [statistics.mean(seeks_cscan),statistics.mean(seeks_sstf) ]  # Lista de valores médios
@@ -115,6 +188,12 @@ def main():
     plt.title('Comparação de Médias de Seek')
     plt.xticks([i + 0.1 for i in range(len(algoritmos))], algoritmos)  # Ajustar posição dos rótulos dos eixos X
     plt.show()
+"""
+
+
+
+
+
 
 
 
