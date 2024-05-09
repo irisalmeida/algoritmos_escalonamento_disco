@@ -2,8 +2,12 @@ import random
 
 import inquirer
 import matplotlib.pyplot as plt
+import statistics
 
+import numpy as np
 from algorithms import Cscan, Sstf
+import generate_seqs
+
 
 def create_figure():
     plt.figure(figsize=(18, 6))
@@ -40,6 +44,7 @@ def get_requests(file_path):
         return []
 
 
+
 def test_algorithms():
     # requests = [278, 914, 447, 71, 161, 659, 335]
     # requests = [176, 79, 34, 60, 92, 11, 41, 114]
@@ -57,6 +62,7 @@ def test_algorithms():
     print("SSTF:")
     print(seek_sequence)
     print(seek_count)
+
 
 
 def main():
@@ -82,18 +88,43 @@ def main():
 
         cscan = Cscan(requests, 500)
         _, seek_count_cscan = cscan.execute()
-        # add_graph("C-SCAN", 50, seek_count_cscan, "blue")
+        #add_graph("C-SCAN", 50, seek_count_cscan, "blue")
         seeks_cscan.append(seek_count_cscan)
 
         sstf = Sstf(requests, 500)
         _, seek_count_sstf = sstf.execute()
-        # add_graph("SSTF", 50, seek_count_sstf, "red")
+        #add_graph("SSTF", 50, seek_count_sstf, "red")
         seeks_sstf.append(seek_count_sstf)
 
-    import statistics
     print(f"{statistics.mean(seeks_cscan) = }")
     print(f"{statistics.mean(seeks_sstf) = }")
-    # plt.show()
+
+
+
+
+ 
+
+    #teste do histograma:
+    algoritmos = ['C-SCAN   ', 'SSTF       ']  # Lista de nomes dos algoritmos
+    medias = [statistics.mean(seeks_cscan),statistics.mean(seeks_sstf) ]  # Lista de valores médios
+
+    plt.bar(algoritmos, medias, color=['purple', 'green'], width=0.3)  # Ajustar cores e largura das barras
+
+    plt.xlabel('Algoritmo')
+    plt.ylabel('Média de Seek')
+    plt.title('Comparação de Médias de Seek')
+    plt.xticks([i + 0.1 for i in range(len(algoritmos))], algoritmos)  # Ajustar posição dos rótulos dos eixos X
+    plt.show()
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     main()
