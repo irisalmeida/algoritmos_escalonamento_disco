@@ -1,114 +1,128 @@
-import os
-from os.path import isfile, join
-from random import randint
-from typing import List
+import random
 
 import inquirer
+import matplotlib.pyplot as plt
+import statistics
 
-DATA_DIR = "data"
+import numpy as np
+from algorithms import Cscan, Sstf
+import generate_seqs
 
 
-def save_to_file(seq: List[int]) -> str:
-    """Save a number sequence to a file to be used later. The file name follows
-    the pattern `seq_<count>`, where `count` is the number of the sequence."""
+def create_figure():
+    plt.figure(figsize=(18, 6))
+
+
+def add_graph(name, x, y, color):
+    plt.subplot(1, 3, 1)
+    plt.plot(x, y, "o", color=color, label=name)
+
+    plt.xlabel('Número de Requisições')
+    plt.ylabel('Seek count')
+    plt.title('')
+    plt.legend()
+    plt.grid(True)
+
+
+def get_requests(file_path):
     try:
-        os.makedirs(DATA_DIR)
-    except FileExistsError:
-        pass
-
-    data_dir_content = os.listdir(DATA_DIR)
-    data_files = [f for f in data_dir_content if isfile(join(DATA_DIR, f))]
-    new_file_name = f"seq_{len(data_files)+1}.txt"
-    with open(join(DATA_DIR, new_file_name), "w") as f:
-        for num in seq:
-            f.write(str(num))
-            f.write(" ")
-        f.write("\n")
-    return new_file_name
-
-
-def get_seq_files() -> List[str]:
-    if not os.path.exists(DATA_DIR): return []
-    data_dir_content = os.listdir(DATA_DIR)
-    data_files = [f for f in data_dir_content if isfile(join(DATA_DIR, f))]
-    seqs = []
-    for seq_file in data_files:
-        with open(join(DATA_DIR, seq_file), "r") as f:
-            seq = f.readline().replace("\n", "")
-            seqs.append(f"{seq_file}: {seq}")
-    return seqs
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+            sequences = []
+            for line in lines:
+                # Remove whitespace and brackets, then split by commas
+                nums = line.strip().strip('[]').split(',')
+                # Convert strings to integers and append to sequences list
+                seq = [int(num) for num in nums if num.strip()]
+                sequences.append(seq)
+            return sequences
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+        return []
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
 
 
-def generate_seq(amount:int) -> List[int]:
-    """Generate a list with <amount> random integer numbers."""
-    seq = []
-    count = 0
-    while count < amount:
-        num = randint(0, 100)
-        if num not in seq: seq.append(num)
-        count += 1
-    return seq
+
+def test_algorithms():
+    # requests = [278, 914, 447, 71, 161, 659, 335]
+    # requests = [176, 79, 34, 60, 92, 11, 41, 114]
+    requests = [16, 24, 43, 82, 140, 170, 190]
+
+    cscan = Cscan(requests, 50)
+    seek_sequence, seek_count = cscan.execute()
+    print("C-SCAN:")
+    print(seek_sequence)
+    print(seek_count)
+    print()
+
+    sstf = Sstf(requests, 50)
+    seek_sequence, seek_count = sstf.execute()
+    print("SSTF:")
+    print(seek_sequence)
+    print(seek_count)
+
 
 
 def main():
-    choices = ["Gerar sequência aleatória", "Escolher sequência",
-               "Informar sequência", "Cancelar"]
+    choices = ["Iniciar", "Cancelar"]
     input_option_question = inquirer.List(
         "input_option",
-        message="Como deseja usar os dados?",
+        message="Análise de algoritmos de disco C-SCAN e F-Scan",
         choices=choices,
     )
-    questions = [input_option_question]
-    answer: dict = inquirer.prompt(questions) or {}
-
-    if answer.get("input_option") == choices[0]:
-        seq = generate_seq(5)
-        choices = ["Sim", "Não"]
-        question = inquirer.List(
-            "confirm_seq",
-            message=f"Sequência aleatória gerada: {seq}. Confirmar?",
-            choices=choices,
-        )
-
-        answer = inquirer.prompt([question]) or {}
-        if answer.get("confirm_seq") == choices[0]:
-            new_file = save_to_file(seq)
-            print(f"Novo arquivo de sequência criado: {new_file}")
-
-    elif answer.get("input_option") == choices[1]:
-        seqs = get_seq_files()
-        if not seqs:
-            print("Erro ao ler sequências: diretório de dados não existe.")
-            exit()
-
-        choices = []
-        for seq in seqs:
-            choices.append(seq)
-
-        print(choices)
-        question = inquirer.List(
-            "seq",
-            message="Sequências disponíveis:",
-            choices=choices
-        )
-        answer: dict = inquirer.prompt([question]) or {}
-        print(f"Utilizando sequência: {answer.get('seq')}")
-
-    elif answer.get("input_option") == choices[2]:
-        question = inquirer.Text(
-            "seq",
-            message="Informe a sequência de números desejada"
-        )
-        answer = inquirer.prompt([question]) or {}
-        seq_str = answer.get("seq")
-        seq = [int(x) for x in seq_str.split()]  
-        print(f"Utilizando sequência: {seq_str}.")
-        new_file = save_to_file(seq)
-        print(f"Nova sequência salva no arquivo: {new_file}")
-
-    else:
-        print("Cancelando ação.")
+    answer = inquirer.prompt([input_option_question]) or {}
+    if answer.get("input_option") == choices[1]:
+        print("Operação cancelada pelo usuário.")
         exit()
+
+    # test_algorithms()
+
+    create_figure()
+
+    seeks_cscan = []
+    seeks_sstf = []
+    for _ in range(1000):
+        requests = random.sample(range(0, 1000), 5)
+
+        cscan = Cscan(requests, 500)
+        _, seek_count_cscan = cscan.execute()
+        #add_graph("C-SCAN", 50, seek_count_cscan, "blue")
+        seeks_cscan.append(seek_count_cscan)
+
+        sstf = Sstf(requests, 500)
+        _, seek_count_sstf = sstf.execute()
+        #add_graph("SSTF", 50, seek_count_sstf, "red")
+        seeks_sstf.append(seek_count_sstf)
+
+    print(f"{statistics.mean(seeks_cscan) = }")
+    print(f"{statistics.mean(seeks_sstf) = }")
+
+
+
+
+ 
+
+    #teste do histograma:
+    algoritmos = ['C-SCAN   ', 'SSTF       ']  # Lista de nomes dos algoritmos
+    medias = [statistics.mean(seeks_cscan),statistics.mean(seeks_sstf) ]  # Lista de valores médios
+
+    plt.bar(algoritmos, medias, color=['purple', 'green'], width=0.3)  # Ajustar cores e largura das barras
+
+    plt.xlabel('Algoritmo')
+    plt.ylabel('Média de Seek')
+    plt.title('Comparação de Médias de Seek')
+    plt.xticks([i + 0.1 for i in range(len(algoritmos))], algoritmos)  # Ajustar posição dos rótulos dos eixos X
+    plt.show()
+
+
+
+
+
+
+
+
 
 
 
