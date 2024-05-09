@@ -83,27 +83,37 @@ def main():
 
     seeks_cscan = []
     seeks_sstf = []
+    execute_time_cscan = []
+    execution_time_sstf_l = []
     for _ in range(1000):
         requests = random.sample(range(0, 1000), 5)
+    
+    print(requests)
 
-        cscan = Cscan(requests, 500)
-        _, seek_count_cscan = cscan.execute()
-        #add_graph("C-SCAN", 50, seek_count_cscan, "blue")
-        seeks_cscan.append(seek_count_cscan)
 
-        sstf = Sstf(requests, 500)
-        _, seek_count_sstf = sstf.execute()
-        #add_graph("SSTF", 50, seek_count_sstf, "red")
-        seeks_sstf.append(seek_count_sstf)
+    cscan = Cscan(requests, 500)
+    _, seek_count_cscan, execution_time_cscan = cscan.execute()
+    seeks_cscan.append(seek_count_cscan)
+    execute_time_cscan.append(execution_time_cscan)
+    print(f"Tempo de execução do C-SCAN: {execution_time_cscan} ms")
 
-    print(f"{statistics.mean(seeks_cscan) = }")
-    print(f"{statistics.mean(seeks_sstf) = }")
+
+    sstf = Sstf(requests, 500)
+    _, seek_count_sstf, execution_time_sstf = sstf.execute()
+    seeks_sstf.append(seek_count_sstf)
+    execution_time_sstf_l.append(execution_time_sstf)
+    print(f"Tempo de execução do SSTF: {execution_time_sstf} ms")
+
+    #print(f"{statistics.mean(seeks_cscan) = }")
+    #print(f"{statistics.mean(seeks_sstf) = }")
+
+
 
 
 
 
  
-
+"""
     #teste do histograma:
     algoritmos = ['C-SCAN   ', 'SSTF       ']  # Lista de nomes dos algoritmos
     medias = [statistics.mean(seeks_cscan),statistics.mean(seeks_sstf) ]  # Lista de valores médios
@@ -115,15 +125,7 @@ def main():
     plt.title('Comparação de Médias de Seek')
     plt.xticks([i + 0.1 for i in range(len(algoritmos))], algoritmos)  # Ajustar posição dos rótulos dos eixos X
     plt.show()
-
-
-
-
-
-
-
-
-
+"""
 
 
 if __name__ == "__main__":
