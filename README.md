@@ -27,9 +27,7 @@ source .venv/bin/activate
 
 ### Escolha uma das Opções
 
-    -Gerar sequência aleatória
-    -Escolher sequência
-    -Informar sequência 
+    -Iniciar
     -Cancelar
 
 
