@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import Any
 import time
 
 
@@ -13,8 +13,7 @@ class Cscan():
         self.seek_sequence = []
         self.execution_time = 0
 
-
-    def execute(self) -> Tuple[List[int], int]:
+    def execute(self) -> tuple[list[Any], int, float]:
         before = time.time()
         self.left.append(0)
         self.right.append(self.disk_size - 1)
@@ -61,50 +60,43 @@ class Sstf():
         self.seek_sequence = []
         self.execution_time = 0
 
+    def execute(self) -> tuple[list[Any], int, float]:
+        before = time.time()
+        l = len(self.requests)
+        diff = [0] * l
 
-    def execute(self):
-            before = time.time()
-            l = len(self.requests)
-            diff = [0] * l
+        for i in range(l):
+            diff[i] = [0, 0]
 
-            for i in range(l):
-                diff[i] = [0, 0]
+        seek_count = 0
 
-            seek_count = 0
+        seek_sequence = [0] * (l + 1)
 
+        head = self.start_position
+        for i in range(l):
+            seek_sequence[i] = head
+            Sstf.calculate_difference(self.requests, head, diff)
+            index = Sstf.find_min(diff)
 
-            seek_sequence = [0] * (l + 1)
+            diff[index][1] = True
 
-            head = self.start_position
-            for i in range(l):
-                seek_sequence[i] = head
-                Sstf.calculateDifference(self.requests, head, diff)
-                index = Sstf.findMin(diff)
+            seek_count += diff[index][0]
 
-                diff[index][1] = True
+            head = self.requests[index]
 
+        seek_sequence[len(seek_sequence) - 1] = head
+        after = time.time()
+        self.execution_time = (after - before) * 1000
 
-                seek_count += diff[index][0]
-
-                head = self.requests[index]
-
-
-            seek_sequence[len(seek_sequence) - 1] = head
-            after = time.time()
-            self.execution_time = (after - before) * 1000
-
-            return seek_sequence, seek_count, self.execution_time
-
-
+        return seek_sequence, seek_count, self.execution_time
 
     @staticmethod
-    def calculateDifference(queue, head, diff):
+    def calculate_difference(queue, head, diff):
         for i in range(len(diff)):
             diff[i][0] = abs(queue[i] - head)
 
     @staticmethod
-    def findMin(diff):
-
+    def find_min(diff):
         index = -1
         minimum = 999999999
 

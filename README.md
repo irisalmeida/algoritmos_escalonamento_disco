@@ -1,19 +1,17 @@
-
-
 ### Objetivo
 
 - Avaliar, por meio de simulações, diferentes políticas de escalonamento de requisições de I/O e políticas de alocação para sistemas de arquivos FAT.
 
-### Como Rodar
+### Como Executar
 
-1.**Criação de um ambiente virtual (opcional)**
+1. **Criação de um ambiente virtual (opcional)**
 
 ```
 python -m venv .venv
 source .venv/bin/activate
 ```
 
-2. **Instalação de Requisitos:** 
+2. **Instalação de Requisitos:**
     
     ```
     pip install -r requirements.txt
@@ -29,6 +27,3 @@ source .venv/bin/activate
 
     -Iniciar
     -Cancelar
-
-
-
