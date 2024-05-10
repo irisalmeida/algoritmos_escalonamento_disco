@@ -85,29 +85,161 @@ def main():
     seeks_sstf = []
     execute_time_cscan = []
     execution_time_sstf_l = []
-    #for _ in range(1000):
-        #requests = random.sample(range(0, 1000), 5)
+    requests = []
+    # for _ in range(1000):
+    #     requests = random.sample(range(0, 1000), 5)
 
     #requests = [16, 24, 43, 82, 140, 170, 190]
-    #requests = [24, 140, 16, 190, 43, 170, 82]
-    requests = [71, 161, 278, 335, 447, 659, 914]
-    print(requests)
+    #requests = [278, 914, 447, 71, 161, 659, 335]
+    #requests = [71, 161, 278, 335, 447, 659, 914]
+    # requests = [random.randint(0, 999) for _ in range(10000)]
+    # requests.sort()
+    lista_requests_aleatorias = get_requests("data/reqs_aleatorias.txt")
+    lista_requests_sequenciais = get_requests("data/reqs_sequenciais.txt")
+
+    lista_seek_count_cscan_ALEATORIA = []
+    lista_execution_time_cscan_ALEATORIA = []
+    lista_seek_count_sstf_ALEATORIA = []
+    lista_execution_time_sstf_ALEATORIA = []
+
+    for lista in lista_requests_aleatorias:
+        cscan = Cscan(lista, 500)
+        _, seek_count_cscan, execution_time_cscan = cscan.execute()
+        lista_seek_count_cscan_ALEATORIA.append(seek_count_cscan)
+        lista_execution_time_cscan_ALEATORIA.append(execution_time_cscan)
+
+    for lista in lista_requests_aleatorias:
+        sstf = Sstf(lista, 500)
+        _, seek_count_sstf, execution_time_sstf = sstf.execute()
+        lista_seek_count_sstf_ALEATORIA.append(seek_count_sstf)
+        lista_execution_time_sstf_ALEATORIA.append(execution_time_sstf)
+
+    print("ALEATÓRIAS")
+    print("CSCAN")
+    print(f"{statistics.mean(lista_seek_count_cscan_ALEATORIA) = }")
+    print(f"{statistics.mean(lista_execution_time_cscan_ALEATORIA) = }")
+    print("SSTF")
+    print(f"{statistics.mean(lista_seek_count_sstf_ALEATORIA) = }")
+    print(f"{statistics.mean(lista_execution_time_sstf_ALEATORIA) = }")
+
+    lista_seek_count_cscan_SEQUENCIAL = []
+    lista_execution_time_cscan_SEQUENCIAL = []
+    lista_seek_count_sstf_SEQUENCIAL = []
+    lista_execution_time_sstf_SEQUENCIAL = []
+
+    for lista in lista_requests_sequenciais:
+        cscan = Cscan(lista, 500)
+        _, seek_count_cscan, execution_time_cscan = cscan.execute()
+        lista_seek_count_cscan_SEQUENCIAL.append(seek_count_cscan)
+        lista_execution_time_cscan_SEQUENCIAL.append(execution_time_cscan)
+
+    for lista in lista_requests_sequenciais:
+        sstf = Sstf(lista, 500)
+        _, seek_count_sstf, execution_time_sstf = sstf.execute()
+        lista_seek_count_sstf_SEQUENCIAL.append(seek_count_sstf)
+        lista_execution_time_sstf_SEQUENCIAL.append(execution_time_sstf)
+
+    print("SEQUENCIAIS")
+    print("CSCAN")
+    print(f"{statistics.mean(lista_seek_count_cscan_SEQUENCIAL) = }")
+    print(f"{statistics.mean(lista_execution_time_cscan_SEQUENCIAL) = }")
+    print("SSTF")
+    print(f"{statistics.mean(lista_seek_count_sstf_SEQUENCIAL) = }")
+    print(f"{statistics.mean(lista_execution_time_sstf_SEQUENCIAL) = }")
+
+    import matplotlib.pyplot as plt
+
+    def plot_comparison(seek_counts, execution_times, title, ylabel, order, labels):
+        # Calcula a largura das barras
+        bar_width = 0.35
+        index = range(len(seek_counts) // 2)
+
+        fig, ax = plt.subplots()
+        # Plota as barras para CSCAN
+        bars1 = ax.bar(index, seek_counts[:2], bar_width, label='CSCAN', color='purple')
+
+        # Plota as barras para SSTF com um deslocamento
+        bars2 = ax.bar([p + bar_width for p in index], seek_counts[2:], bar_width, label='SSTF', color='green')
+
+        ax.set_xlabel('Tipo de Lista')
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.set_xticks([p + bar_width / 2 for p in index])
+        ax.set_xticklabels(order)
+        ax.legend()
+
+        # Adiciona as etiquetas de dados nas barras
+        for bars in (bars1, bars2):
+            for bar in bars:
+                height = bar.get_height()
+                ax.annotate('{}'.format(height),
+                            xy=(bar.get_x() + bar.get_width() / 2, height),
+                            xytext=(0, 3),  # 3 pontos de deslocamento vertical
+                            textcoords="offset points",
+                            ha='center', va='bottom')
+
+        plt.show()
+
+    # # Asumindo que as listas *_ALEATORIA e *_SEQUENCIAL contêm os dados médios de cada algoritmo
+    # plot_comparison(
+    #     [statistics.mean(lista_seek_count_cscan_ALEATORIA), statistics.mean(lista_seek_count_cscan_SEQUENCIAL),
+    #      statistics.mean(lista_seek_count_sstf_ALEATORIA), statistics.mean(lista_seek_count_sstf_SEQUENCIAL)],
+    #     [statistics.mean(lista_execution_time_cscan_ALEATORIA), statistics.mean(lista_execution_time_cscan_SEQUENCIAL),
+    #      statistics.mean(lista_execution_time_sstf_ALEATORIA), statistics.mean(lista_execution_time_sstf_SEQUENCIAL)],
+    #     'Comparação de Seek Count por Algoritmo e Tipo de Lista',
+    #     'Média de Seek Count',
+    #     ['Aleatórias', 'Sequenciais'],
+    #     ['CSCAN', 'SSTF']
+    # )
+
+    plot_comparison(
+        [statistics.mean(lista_execution_time_cscan_ALEATORIA), statistics.mean(lista_execution_time_cscan_SEQUENCIAL),
+         statistics.mean(lista_execution_time_sstf_ALEATORIA), statistics.mean(lista_execution_time_sstf_SEQUENCIAL)],
+        [statistics.mean(lista_seek_count_cscan_ALEATORIA), statistics.mean(lista_seek_count_cscan_SEQUENCIAL),
+         statistics.mean(lista_seek_count_sstf_ALEATORIA), statistics.mean(lista_seek_count_sstf_SEQUENCIAL)],
+        'Comparação de Tempo de Execução por Algoritmo e Tipo de Lista',
+        'Tempo de Execução (s)',
+        ['Aleatórias', 'Sequenciais'],
+        ['CSCAN', 'SSTF']
+    )
 
 
-    cscan = Cscan(requests, 500)
-    _, seek_count_cscan, execution_time_cscan = cscan.execute()
-    seeks_cscan.append(seek_count_cscan)
-    execute_time_cscan.append(execution_time_cscan)
-    print(f"Tempo de execução do C-SCAN: {execution_time_cscan} ms")
-    print(f"Quantidade de Seeks do C-SCAN:{seeks_cscan}")
-  
-    sstf = Sstf(requests, 500)
-    _, seek_count_sstf, execution_time_sstf = sstf.execute()
-    seeks_sstf.append(seek_count_sstf)
-    execution_time_sstf_l.append(execution_time_sstf)
-    print(f"Tempo de execução do SSTF: {execution_time_sstf} ms")
-    print(f"Quantidade de Seeks do SSTF:{seeks_sstf}")
 
+
+# cscan = Cscan(requests, 500)
+    # seek_sequence_cscan, seek_count_cscan, execution_time_cscan = cscan.execute()
+    # seeks_cscan.append(seek_count_cscan)
+    # execute_time_cscan.append(execution_time_cscan)
+    # print(f"Tempo de execução do C-SCAN: {execution_time_cscan} ms")
+    # print(f"Quantidade de Seeks do C-SCAN:{seeks_cscan}")
+    #
+    # sstf = Sstf(requests, 500)
+    # seek_sequence_sstf, seek_count_sstf, execution_time_sstf = sstf.execute()
+    # seeks_sstf.append(seek_count_sstf)
+    # execution_time_sstf_l.append(execution_time_sstf)
+    # print(f"Tempo de execução do SSTF: {execution_time_sstf} ms")
+    # print(f"Quantidade de Seeks do SSTF:{seeks_sstf}")
+
+#ESSE ABAIXO DEU BOM E FOI USADO
+    # # Plotar o gráfico CSCAN
+    # plt.figure(figsize=(10, 5))  # Define o tamanho da figura
+    # plt.plot(seek_sequence_cscan, marker='o', color='purple')  # Plotar a sequência de movimentos
+    # plt.title('Comportamento Circular do Algoritmo C-SCAN')
+    # plt.xlabel('Sequência de Requisições')
+    # plt.ylabel('Posição no Disco')
+    # plt.xticks(range(len(seek_sequence_cscan)), labels=seek_sequence_cscan)  # Marca cada ponto com a posição correspondente
+    # plt.grid(True)  # Adiciona uma grade para melhor visualização
+    # plt.show()
+
+    # Plotar o gráfico SSTF
+    # plt.figure(figsize=(10, 5))  # Define o tamanho da figura
+    # plt.plot(seek_sequence_sstf, marker='o', color='green')  # Plotar a sequência de movimentos
+    # plt.title('Comportamento Circular do Algoritmo SSTF')
+    # plt.xlabel('Sequência de Requisições')
+    # plt.ylabel('Posição no Disco')
+    # plt.xticks(range(len(seek_sequence_sstf)), labels=seek_sequence_sstf)  # Marca cada ponto com a posição correspondente
+    # plt.grid(True)  # Adiciona uma grade para melhor visualização
+    # plt.show()
 
     #print(f"{statistics.mean(seeks_cscan) = }")
     #print(f"{statistics.mean(seeks_sstf) = }")
