@@ -16,42 +16,47 @@ def get_requests(file_path):
         return sequences
 
 
-def primeiro_caso():
+def primeiro_caso(should_print_and_plot):
     requests_ord = [278, 914, 447, 71, 161, 659, 335]
     requests_aleat = [71, 161, 278, 335, 447, 659, 914]
 
     cscan = Cscan(requests_ord, 500)
     seek_sequence1, seek_count1, execution_time1 = cscan.execute()
-    print("C-SCAN lista ordenada:")
-    print(f"Contagem de seeks: {seek_count1}")
-    print(f"Tempo de execução: {execution_time1}\n")
 
     sstf = Sstf(requests_ord, 500)
     seek_sequence2, seek_count2, execution_time2 = sstf.execute()
-    print("SSTF lista ordenada:")
-    print(f"Contagem de seeks: {seek_count2}")
-    print(f"Tempo de execução: {execution_time2}\n")
 
     cscan2 = Cscan(requests_aleat, 500)
     seek_sequence3, seek_count3, execution_time3 = cscan2.execute()
-    print("C-SCAN lista aleatória:")
-    print(f"Contagem de seeks: {seek_count3}")
-    print(f"Tempo de execução: {execution_time3}\n")
 
     sstf2 = Sstf(requests_aleat, 500)
     seek_sequence4, seek_count4, execution_time4 = sstf2.execute()
-    print("SSTF lista aleatória:")
-    print(f"Contagem de seeks: {seek_count4}")
-    print(f"Tempo de execução: {execution_time4}\n")
 
-    plt.figure(figsize=(10, 5))
-    plt.plot(seek_sequence3, marker='o', color='purple')
-    plt.title('Comportamento Circular do Algoritmo C-SCAN')
-    plt.xlabel('Sequência de Requisições')
-    plt.ylabel('Posição no Disco')
-    plt.xticks(range(len(seek_sequence3)), labels=seek_sequence3)
-    plt.grid(True)
-    plt.show()
+    if should_print_and_plot:
+        print("C-SCAN lista ordenada:")
+        print(f"Contagem de seeks: {seek_count1}")
+        print(f"Tempo de execução: {execution_time1}\n")
+
+        print("SSTF lista ordenada:")
+        print(f"Contagem de seeks: {seek_count2}")
+        print(f"Tempo de execução: {execution_time2}\n")
+
+        print("C-SCAN lista aleatória:")
+        print(f"Contagem de seeks: {seek_count3}")
+        print(f"Tempo de execução: {execution_time3}\n")
+
+        print("SSTF lista aleatória:")
+        print(f"Contagem de seeks: {seek_count4}")
+        print(f"Tempo de execução: {execution_time4}\n")
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(seek_sequence3, marker='o', color='purple')
+        plt.title('Comportamento Circular do Algoritmo C-SCAN')
+        plt.xlabel('Sequência de Requisições')
+        plt.ylabel('Posição no Disco')
+        plt.xticks(range(len(seek_sequence3)), labels=seek_sequence3)
+        plt.grid(True)
+        plt.show()
 
     return seek_count1, execution_time1, seek_count2, execution_time2
 
@@ -96,10 +101,11 @@ def plota_grafico_comparacao_execution_time(execution_time_cscan, execution_time
     plt.show()
 
 
-def segundo_caso(seek_count_pq_cscan, execution_time_pq_cscan,
-                 seek_count_pq_sstf, execution_time_pq_sstf):
+def segundo_caso():
     requests = [random.randint(0, 999) for _ in range(10000)]
     requests.sort()
+
+    seek_count_pq_cscan, execution_time_pq_cscan, seek_count_pq_sstf, execution_time_pq_sstf = primeiro_caso(False)
 
     cscan = Cscan(requests, 500)
     seek_sequence_gd_cscan, seek_count_gd_cscan, execution_time_gd_cscan = cscan.execute()
@@ -226,22 +232,34 @@ def terceiro_caso():
 
 
 def main():
-    choices = ["Iniciar", "Cancelar"]
+    start_choices = ["Iniciar", "Cancelar"]
     input_option_question = inquirer.List(
-        "input_option",
+        "start",
         message="Análise de algoritmos de disco C-SCAN e SSTF",
-        choices=choices,
-    )
-    answer = inquirer.prompt([input_option_question]) or {}
-    if answer.get("input_option") == choices[1]:
+        choices=start_choices)
+    start_answer = inquirer.prompt([input_option_question]) or {}
+
+    if start_answer.get("start") == "Cancelar":
         print("Operação cancelada pelo usuário.")
         exit()
 
-    seek_count1, execution_time1, seek_count2, execution_time2 = primeiro_caso()
+    if start_answer.get("start") == "Iniciar":
+        case_choices = ["Primeiro Caso", "Segundo Caso", "Terceiro Caso", "Cancelar"]
+        input_case_question = inquirer.List(
+            "case",
+            message="Escolha um caso de estudo para executar:",
+            choices=case_choices)
+        case_answer = inquirer.prompt([input_case_question]) or {}
 
-    segundo_caso(seek_count1, execution_time1, seek_count2, execution_time2)
-
-    terceiro_caso()
+        if case_answer.get("case") == "Cancelar":
+            print("Operação cancelada pelo usuário.")
+            exit()
+        elif case_answer.get("case") == "Primeiro Caso":
+            primeiro_caso(True)
+        elif case_answer.get("case") == "Segundo Caso":
+            segundo_caso()
+        elif case_answer.get("case") == "Terceiro Caso":
+            terceiro_caso()
 
 
 if __name__ == "__main__":
