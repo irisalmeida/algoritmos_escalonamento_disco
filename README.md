@@ -24,17 +24,22 @@ O projeto tem como objetivo avaliar diferentes políticas de escalonamento de re
    python main.py
    ```
 
+   
 ## Opções Disponíveis
 
 - **Iniciar**
 
     Ao selecionar esta opção, você pode escolher um caso de estudo para executar:
-
-    - Primeiro Caso: Lista pequena ordenada e aleatória.
-    - Segundo Caso: Lista de 10 mil elementos, tanto ordenada quanto aleatória.
-    - Terceiro Caso: Comparação entre resultados de várias listas aleatórias e várias listas ordenadas.
+    
+    - Primeiro Caso:
+      - Descrição: Lista pequena ordenada e aleatória.
+      
+    - Segundo Caso:
+      - Descrição: Lista de 10 mil elementos, tanto ordenada quanto aleatória.
+      
+    - Terceiro Caso:
+      - Descrição: Comparação entre resultados de várias listas aleatórias e várias listas ordenadas.
 
 - **Cancelar** 
 
-Advertência: Nossos casos de estudo podem demorar a rodar devido ao número de requisições, especialmente o caso 3
-
+    - Advertência: Nossos casos de estudo podem demorar a rodar devido ao número de requisições, especialmente o caso 3.
