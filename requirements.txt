@@ -1,1 +1,2 @@
 inquirer==3.2.4
+matplotlib
