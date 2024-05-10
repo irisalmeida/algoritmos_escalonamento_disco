@@ -1,29 +1,40 @@
+
 ### Objetivo
 
-- Avaliar, por meio de simulações, diferentes políticas de escalonamento de requisições de I/O e políticas de alocação para sistemas de arquivos FAT.
+O projeto tem como objetivo avaliar diferentes políticas de escalonamento de requisições de I/O, por meio de simulações. As métricas utilizadas são: quantidade de seeks e tempo de execução. Ao executar o script, são apresentados gráficos de comparação entre as políticas C-SCAN e SSTF.
 
-### Como Executar
+## Como Executar
 
 1. **Criação de um ambiente virtual (opcional)**
 
-```
-python -m venv .venv
-source .venv/bin/activate
-```
+   ```
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
 
 2. **Instalação de Requisitos:**
-    
-    ```
-    pip install -r requirements.txt
-    ```
-    
+
+   ```
+   pip install -r requirements.txt
+   ```
+
 3. **Execução do Programa:**
-    
-    ```
-    python main.py
-    ```
 
-### Escolha uma das Opções
+   ```
+   python main.py
+   ```
 
-    -Iniciar
-    -Cancelar
+## Opções Disponíveis
+
+(Advertência: Nossos casos de estudo podem demorar a rodar devido ao número de requisições, especialmente o caso 3)
+
+- **Iniciar**
+
+    Ao selecionar esta opção, você pode escolher um caso de estudo para executar:
+
+    - Primeiro Caso: Lista pequena ordenada e aleatória.
+    - Segundo Caso: Lista de 10 mil elementos, tanto ordenada quanto aleatória.
+    - Terceiro Caso: Comparação entre resultados de várias listas aleatórias e várias listas sequenciais.
+
+- **Cancelar** 
+
