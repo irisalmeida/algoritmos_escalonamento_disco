@@ -1,4 +1,3 @@
-from typing import Any
 import time
 
 
@@ -11,10 +10,9 @@ class Cscan():
         self.left = []
         self.right = []
         self.seek_sequence = []
-        self.execution_time = 0
+        self.execution_times = []
 
-    def execute(self) -> tuple[list[Any], int, float]:
-        before = time.time()
+    def execute(self) -> tuple[list[int], int, list[float]]:
         self.left.append(0)
         self.right.append(self.disk_size - 1)
         for request in self.requests:
@@ -29,24 +27,27 @@ class Cscan():
         self.seek_sequence.append(cur_pos)
 
         for next_pos in self.right:
+            before = time.time()
             self.seek_sequence.append(next_pos)
             delta_distance = abs(cur_pos - next_pos)
             self.seek_count += delta_distance
             cur_pos = next_pos
+            after = time.time()
+            self.execution_times.append((after - before) * 1000)
 
         cur_pos = 0
         self.seek_count += (self.disk_size - 1)
 
         for next_pos in self.left:
+            before = time.time()
             self.seek_sequence.append(next_pos)
             delta_distance = abs(cur_pos - next_pos)
             self.seek_count += delta_distance
             cur_pos = next_pos
+            after = time.time()
+            self.execution_times.append((after - before) * 1000)
 
-        after = time.time()
-        self.execution_time = (after - before) * 1000
-
-        return self.seek_sequence, self.seek_count, self.execution_time
+        return self.seek_sequence, self.seek_count, self.execution_times
 
 
 class Sstf():
@@ -58,37 +59,37 @@ class Sstf():
         self.left = []
         self.right = []
         self.seek_sequence = []
-        self.execution_time = 0
+        self.execution_times = []
 
-    def execute(self) -> tuple[list[Any], int, float]:
-        before = time.time()
+    def execute(self) -> tuple[list[int], int, list[float]]:
         l = len(self.requests)
         diff = [0] * l
 
         for i in range(l):
             diff[i] = [0, 0]
 
-        seek_count = 0
+        self.seek_count = 0
 
-        seek_sequence = [0] * (l + 1)
+        self.seek_sequence = [0] * (l + 1)
 
         head = self.start_position
         for i in range(l):
-            seek_sequence[i] = head
+            self.seek_sequence[i] = head
             Sstf.calculate_difference(self.requests, head, diff)
             index = Sstf.find_min(diff)
 
+            before = time.time()
             diff[index][1] = True
 
-            seek_count += diff[index][0]
+            self.seek_count += diff[index][0]
 
             head = self.requests[index]
+            after = time.time()
+            self.execution_times.append((after - before) * 1000)
 
-        seek_sequence[len(seek_sequence) - 1] = head
-        after = time.time()
-        self.execution_time = (after - before) * 1000
+        self.seek_sequence[len(self.seek_sequence) - 1] = head
 
-        return seek_sequence, seek_count, self.execution_time
+        return self.seek_sequence, self.seek_count, self.execution_times
 
     @staticmethod
     def calculate_difference(queue, head, diff):
