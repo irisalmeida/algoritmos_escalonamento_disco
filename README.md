@@ -1,5 +1,5 @@
 
-### Objetivo
+## Objetivo
 
 Este projeto visa avaliar diferentes políticas de escalonamento de requisições de I/O por meio de simulações. As métricas utilizadas são a quantidade de seeks e o tempo de execução. Ao executar o script, são apresentados gráficos de comparação entre as políticas C-SCAN e SSTF.
 
