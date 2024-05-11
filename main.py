@@ -21,46 +21,71 @@ def primeiro_caso(should_print_and_plot):
     requests_aleat = [71, 161, 278, 335, 447, 659, 914]
 
     cscan_ord = Cscan(requests_ord, 500)
-    seek_sequence_cscan_ord, seek_count_cscan_ord, execution_time_cscan_ord = cscan_ord.execute()
+    _, seek_count_cscan_ord, execution_time_cscan_ord = cscan_ord.execute()
     media_tempo_execucao_cscan_ord = statistics.mean(execution_time_cscan_ord)
+    soma_tempo_execucao_cscan_ord = sum(execution_time_cscan_ord)
+
 
     sstf_ord = Sstf(requests_ord, 500)
-    seek_sequence_sstf_ord, seek_count_sstf_ord, execution_time_sstf_ord = sstf_ord.execute()
+    _, seek_count_sstf_ord, execution_time_sstf_ord = sstf_ord.execute()
     media_tempo_execucao_sstf_ord = statistics.mean(execution_time_sstf_ord)
+    soma_tempo_execucao_sstf_ord = sum(execution_time_sstf_ord)
+
 
     cscan_aleat = Cscan(requests_aleat, 500)
     seek_sequence_cscan_aleat, seek_count_cscan_aleat, execution_time_cscan_aleat = cscan_aleat.execute()
     media_tempo_execucao_cscan_aleat = statistics.mean(execution_time_cscan_aleat)
+    soma_tempo_execucao_cscan_aleat = sum(execution_time_cscan_aleat)
+
 
     sstf_aleat = Sstf(requests_aleat, 500)
     seek_sequence_sstf_aleat, seek_count_sstf_aleat, execution_time_sstf_aleat = sstf_aleat.execute()
     media_tempo_execucao_sstf_aleat = statistics.mean(execution_time_sstf_aleat)
+    soma_tempo_execucao_sstf_aleat = sum(execution_time_sstf_aleat)
+
 
     if should_print_and_plot:
         print("C-SCAN lista ordenada:")
         print(f"Contagem de seeks: {seek_count_cscan_ord}")
-        print(f"Média tempo de execução: {media_tempo_execucao_cscan_ord}\n")
+        print(f"Média tempo de execução: {media_tempo_execucao_cscan_ord}")
+        print(f"Tempo Total de Execução: {soma_tempo_execucao_cscan_ord}\n")
 
         print("SSTF lista ordenada:")
         print(f"Contagem de seeks: {seek_count_sstf_ord}")
-        print(f"Média tempo de execução: {media_tempo_execucao_sstf_ord}\n")
+        print(f"Média tempo de execução: {media_tempo_execucao_sstf_ord}")
+        print(f"Tempo Total de Execução: {soma_tempo_execucao_sstf_ord}\n")
 
         print("C-SCAN lista aleatória:")
         print(f"Contagem de seeks: {seek_count_cscan_aleat}")
-        print(f"Média tempo de execução: {media_tempo_execucao_cscan_aleat}\n")
+        print(f"Média tempo de execução: {media_tempo_execucao_cscan_aleat}")
+        print(f"Tempo Total de Execução: {soma_tempo_execucao_cscan_aleat}\n")
 
         print("SSTF lista aleatória:")
         print(f"Contagem de seeks: {seek_count_sstf_aleat}")
-        print(f"Média tempo de execução: {media_tempo_execucao_sstf_aleat}\n")
+        print(f"Média tempo de execução: {media_tempo_execucao_sstf_aleat}")
+        print(f"Tempo Total de Execução: {soma_tempo_execucao_sstf_aleat}\n")
 
+        # CSCAN ALEAT
         plt.figure(figsize=(10, 5))
         plt.plot(seek_sequence_cscan_aleat, marker='o', color='purple')
         plt.title('Comportamento Circular do Algoritmo C-SCAN')
-        plt.xlabel('Sequência de Requisições')
+        plt.xlabel('Sequência de Requisições(Lista Aleatória)')
         plt.ylabel('Posição no Disco')
         plt.xticks(range(len(seek_sequence_cscan_aleat)), labels=seek_sequence_cscan_aleat)
         plt.grid(True)
         plt.show()
+
+     
+        #SSTF ALEAT
+        plt.figure(figsize=(10, 5))
+        plt.plot(seek_sequence_sstf_aleat, marker='o', color='green')
+        plt.title('Comportamento do Algoritmo SSTF(Lista Aleatória)')
+        plt.xlabel('Sequência de Requisições')
+        plt.ylabel('Posição no Disco')
+        plt.xticks(range(len(seek_sequence_sstf_aleat)), labels = seek_sequence_sstf_aleat)
+        plt.grid(True)
+        plt.show()
+
 
     return seek_count_cscan_ord, media_tempo_execucao_cscan_ord, seek_count_sstf_ord, media_tempo_execucao_sstf_ord, seek_count_cscan_aleat, media_tempo_execucao_cscan_aleat, seek_count_sstf_aleat, media_tempo_execucao_sstf_aleat
 
@@ -146,14 +171,14 @@ def segundo_caso():
     cscan_aleat = Cscan(requests_aleat, 500)
     _, seek_count_gd_cscan_aleat, execution_time_gd_cscan_aleat = cscan_aleat.execute()
     media_tempo_gd_execucao_cscan_aleat = statistics.mean(execution_time_gd_cscan_aleat)
-    print("C-SCAN lista ordenada 10 mil elementos:")
+    print("C-SCAN lista aleatória 10 mil elementos:")
     print(f"Contagem de seeks: {seek_count_gd_cscan_aleat}")
     print(f"Média tempo de execução: {media_tempo_gd_execucao_cscan_aleat}\n")
 
     sstf_aleat = Sstf(requests_aleat, 500)
     _, seek_count_gd_sstf_aleat, execution_time_gd_sstf_aleat = sstf_aleat.execute()
     media_tempo_gd_execucao_sstf_aleat = statistics.mean(execution_time_gd_sstf_aleat)
-    print("SSTF lista ordenada 10 mil elementos:")
+    print("SSTF lista aleatória 10 mil elementos:")
     print(f"Contagem de seeks: {seek_count_gd_sstf_aleat}")
     print(f"Média tempo de execução: {media_tempo_gd_execucao_sstf_aleat}\n")
 
@@ -192,7 +217,7 @@ def histograma_medias(seek_counts, title, ylabel, order):
     for bars in (bars1, bars2):
         for bar in bars:
             height = bar.get_height()
-            ax.annotate('{:.4f}'.format(height),  # Formatação para duas casas decimais
+            ax.annotate('{:.4f}'.format(height),  
                         xy=(bar.get_x() + bar.get_width() / 2, height),
                         xytext=(0, 3),
                         textcoords="offset points",
@@ -297,7 +322,7 @@ def main():
         case_choices = ["Primeiro Caso", "Segundo Caso", "Terceiro Caso", "Cancelar"]
         input_case_question = inquirer.List(
             "case",
-            message="Escolha um caso de estudo para executar:",
+            message="Escolha um caso de estudo para executar",
             choices=case_choices)
         case_answer = inquirer.prompt([input_case_question]) or {}
 
