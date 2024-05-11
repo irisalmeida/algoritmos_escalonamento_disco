@@ -93,9 +93,8 @@ def plota_grafico_comparacao_execution_time(media_execution_time_cscan, media_ex
     bars = plt.barh(algorithms, execution_times_avg, color=['purple', 'green'])
 
     for bar, value in zip(bars, execution_times_avg):
-        bbox = dict(boxstyle='round', facecolor='white', edgecolor='0.3')
-        plt.text(bar.get_width(), bar.get_y() + bar.get_height() / 2, f'{value}',
-                 va='center', ha='left', bbox=bbox)
+        plt.text(bar.get_width(), bar.get_y() + bar.get_height() / 2, f'{value:.4f}',
+                 va='center', ha='left')
 
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -181,7 +180,6 @@ def histograma_medias(seek_counts, title, ylabel, order):
 
     fig, ax = plt.subplots()
     bars1 = ax.bar(index, seek_counts[:2], bar_width, label='C-SCAN', color='purple')
-
     bars2 = ax.bar([p + bar_width for p in index], seek_counts[2:], bar_width, label='SSTF', color='green')
 
     ax.set_xlabel('Tipo de Lista')
@@ -194,13 +192,14 @@ def histograma_medias(seek_counts, title, ylabel, order):
     for bars in (bars1, bars2):
         for bar in bars:
             height = bar.get_height()
-            ax.annotate('{}'.format(height),
+            ax.annotate('{:.4f}'.format(height),  # Formatação para duas casas decimais
                         xy=(bar.get_x() + bar.get_width() / 2, height),
                         xytext=(0, 3),
                         textcoords="offset points",
                         ha='center', va='bottom')
 
     plt.show()
+
 
 
 def terceiro_caso():
